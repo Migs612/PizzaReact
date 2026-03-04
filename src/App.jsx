@@ -12,6 +12,7 @@ import ProductDetail from './pages/ProductDetail'
 import Checkout from './pages/Checkout'
 import Profile from './pages/Profile'
 import Admin from './pages/Admin'
+import { useAuth } from './context/AuthContext'
 
 function PageWrapper({ children }) {
   return (
@@ -28,14 +29,23 @@ function PageWrapper({ children }) {
 
 export default function App() {
   const location = useLocation()
+  const { loading } = useAuth()
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="w-10 h-10 border-4 border-pizza-red border-t-transparent rounded-full animate-spin" />
+      </div>
+    )
+  }
 
   return (
     <div className="flex flex-col min-h-screen bg-white">
       <Navbar />
       <CartDrawer />
 
-      <main className="flex-1">
-        <div className="max-w-[1440px] mx-auto w-full">
+      <main className="flex-1 flex flex-col grow">
+        <div className="max-w-[1440px] mx-auto w-full flex-1">
           <AnimatePresence mode="wait">
             <Routes location={location} key={location.pathname}>
               <Route path="/" element={<PageWrapper><Home /></PageWrapper>} />

@@ -2,7 +2,7 @@
 // useOrders Hook - Gestión de pedidos
 // =============================================
 import { useState, useEffect, useCallback } from 'react'
-import axios from 'axios'
+import api from '../lib/axios'
 
 // Almacén mock de pedidos (persiste en memoria)
 let mockOrders = []
@@ -14,10 +14,7 @@ export function useOrders() {
   const fetchOrders = useCallback(async () => {
     setLoading(true)
     try {
-      const token = localStorage.getItem('token')
-      const res = await axios.get('/api/orders', {
-        headers: { Authorization: `Bearer ${token}` }
-      })
+      const res = await api.get('/api/orders')
       setOrders(res.data)
     } catch {
       // Fallback a mock
@@ -32,11 +29,10 @@ export function useOrders() {
   }, [fetchOrders])
 
   // Crear pedido
-  const createOrder = async (items, total) => {
+  const createOrder = async (items, total, addressId = null, paymentMethodId = null) => {
     try {
-      const token = localStorage.getItem('token')
-      const res = await axios.post('/api/orders', { items, total }, {
-        headers: { Authorization: `Bearer ${token}` }
+      const res = await api.post('/api/orders', {
+        items, total, address_id: addressId, payment_method_id: paymentMethodId
       })
       const newOrder = res.data
       setOrders(prev => [newOrder, ...prev])
@@ -54,7 +50,8 @@ export function useOrders() {
           image_url: item.image_url
         })),
         created_at: new Date().toISOString(),
-        pointsEarned: Math.floor(total)
+        pointsEarned: Math.floor(total),
+        newTotalPoints: null
       }
       mockOrders = [newOrder, ...mockOrders]
       setOrders([...mockOrders])

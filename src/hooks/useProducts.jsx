@@ -2,7 +2,7 @@
 // useProducts Hook - Gestión de productos
 // =============================================
 import { useState, useEffect } from 'react'
-import axios from 'axios'
+import api from '../lib/axios'
 
 // Datos mock de productos
 const MOCK_PRODUCTS = [
@@ -37,7 +37,7 @@ export function useProducts(category = null) {
     setLoading(true)
     try {
       const params = category ? `?category=${category}` : ''
-      const res = await axios.get(`/api/products${params}`)
+      const res = await api.get(`/api/products${params}`)
       setProducts(res.data)
     } catch {
       // Fallback a datos mock
@@ -56,10 +56,7 @@ export function useProducts(category = null) {
 
   const addProduct = async (product) => {
     try {
-      const token = localStorage.getItem('token')
-      const res = await axios.post('/api/products', product, {
-        headers: { Authorization: `Bearer ${token}` }
-      })
+      const res = await api.post('/api/products', product)
       setProducts(prev => [...prev, res.data])
       return { success: true }
     } catch {
@@ -72,10 +69,7 @@ export function useProducts(category = null) {
 
   const updateProduct = async (id, product) => {
     try {
-      const token = localStorage.getItem('token')
-      await axios.put(`/api/products/${id}`, product, {
-        headers: { Authorization: `Bearer ${token}` }
-      })
+      await api.put(`/api/products/${id}`, product)
       setProducts(prev => prev.map(p => p.id === id ? { ...p, ...product } : p))
       return { success: true }
     } catch {
@@ -86,10 +80,7 @@ export function useProducts(category = null) {
 
   const deleteProduct = async (id) => {
     try {
-      const token = localStorage.getItem('token')
-      await axios.delete(`/api/products/${id}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      })
+      await api.delete(`/api/products/${id}`)
       setProducts(prev => prev.filter(p => p.id !== id))
       return { success: true }
     } catch {

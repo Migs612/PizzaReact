@@ -6,12 +6,13 @@ import pool from '../config/db.js'
 // Crear pedido
 export const createOrder = async (req, res) => {
   try {
-    const { items, total } = req.body
+    const { items, total, address_id, payment_method_id } = req.body
     const userId = req.userId
+    const pointsEarned = Math.floor(total)
 
     const [orderResult] = await pool.query(
-      'INSERT INTO orders (user_id, total, status) VALUES (?, ?, ?)',
-      [userId, total, 'Pendiente']
+      'INSERT INTO orders (user_id, total, status, address_id, payment_method_id, earned_points) VALUES (?, ?, ?, ?, ?, ?)',
+      [userId, total, 'Pendiente', address_id || null, payment_method_id || null, pointsEarned]
     )
 
     const orderId = orderResult.insertId
@@ -25,14 +26,26 @@ export const createOrder = async (req, res) => {
     }
 
     // Añadir puntos al usuario
-    const pointsEarned = Math.floor(total)
     await pool.query('UPDATE users SET points = points + ? WHERE id = ?', [pointsEarned, userId])
+
+    // Obtener puntos actualizados
+    const [userRows] = await pool.query('SELECT points FROM users WHERE id = ?', [userId])
+    const newTotalPoints = userRows[0]?.points ?? 0
 
     res.status(201).json({
       id: orderId,
       status: 'Pendiente',
       total,
-      pointsEarned
+      items: items.map(item => ({
+        name: item.name,
+        price: item.price,
+        quantity: item.quantity,
+        size: item.size || 'Medium',
+        image_url: item.image_url
+      })),
+      created_at: new Date().toISOString(),
+      pointsEarned,
+      newTotalPoints
     })
   } catch (error) {
     console.error('Error creando pedido:', error)

@@ -2,7 +2,7 @@
 // Auth Context - JWT + localStorage persistence + auto-login
 // =============================================
 import { createContext, useContext, useState, useEffect, useCallback } from 'react'
-import axios from 'axios'
+import api from '../lib/axios'
 
 const AuthContext = createContext(null)
 
@@ -13,15 +13,6 @@ const MOCK_USERS = [
 ]
 
 const API_URL = '/api/auth'
-
-// Helper: configurar header Authorization por defecto
-function setAxiosAuthHeader(token) {
-  if (token) {
-    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
-  } else {
-    delete axios.defaults.headers.common['Authorization']
-  }
-}
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null)
@@ -35,12 +26,9 @@ export function AuthProvider({ children }) {
     const savedUser = localStorage.getItem('user')
 
     if (savedToken && savedUser) {
-      // Configurar axios con el token guardado
-      setAxiosAuthHeader(savedToken)
-
       // Si es token real, intentar verificar con backend
       if (savedToken !== 'mock-token') {
-        axios.get(`${API_URL}/profile`)
+        api.get(`${API_URL}/profile`)
           .then(res => {
             // Token válido — actualizar con datos frescos del backend
             const freshUser = res.data
@@ -59,7 +47,6 @@ export function AuthProvider({ children }) {
               // Datos corruptos
               localStorage.removeItem('token')
               localStorage.removeItem('user')
-              setAxiosAuthHeader(null)
             }
           })
           .finally(() => setLoading(false))
@@ -89,13 +76,12 @@ export function AuthProvider({ children }) {
     setUseMock(isMock)
     localStorage.setItem('token', newToken)
     localStorage.setItem('user', JSON.stringify(userData))
-    setAxiosAuthHeader(newToken)
   }, [])
 
   // ---- Login ----
   const login = async (email, password) => {
     try {
-      const res = await axios.post(`${API_URL}/login`, { email, password })
+      const res = await api.post(`${API_URL}/login`, { email, password })
       const { token: newToken, user: userData } = res.data
       persistSession(userData, newToken)
       return { success: true }
@@ -114,7 +100,7 @@ export function AuthProvider({ children }) {
   // ---- Registro ----
   const register = async (name, email, password) => {
     try {
-      const res = await axios.post(`${API_URL}/register`, { name, email, password })
+      const res = await api.post(`${API_URL}/register`, { name, email, password })
       const { token: newToken, user: userData } = res.data
       persistSession(userData, newToken)
       return { success: true }
@@ -138,7 +124,6 @@ export function AuthProvider({ children }) {
     setUseMock(false)
     localStorage.removeItem('token')
     localStorage.removeItem('user')
-    setAxiosAuthHeader(null)
   }
 
   // ---- Admin check: siempre basado en email ----

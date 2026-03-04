@@ -35,6 +35,9 @@ CREATE TABLE IF NOT EXISTS orders (
   user_id INT NOT NULL,
   status ENUM('Pendiente', 'Preparando', 'En camino', 'Entregado') DEFAULT 'Pendiente',
   total DECIMAL(10, 2) NOT NULL,
+  address_id INT DEFAULT NULL,
+  payment_method_id INT DEFAULT NULL,
+  earned_points INT DEFAULT 0,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
@@ -51,14 +54,39 @@ CREATE TABLE IF NOT EXISTS order_items (
   FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
 );
 
+-- Tabla de direcciones del usuario
+CREATE TABLE IF NOT EXISTS addresses (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NOT NULL,
+  label VARCHAR(50) DEFAULT 'Casa',
+  street VARCHAR(255) NOT NULL,
+  city VARCHAR(100) NOT NULL DEFAULT 'Madrid',
+  postal_code VARCHAR(10) NOT NULL DEFAULT '28001',
+  phone VARCHAR(20) DEFAULT NULL,
+  is_main TINYINT(1) NOT NULL DEFAULT 0,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- Tabla de métodos de pago del usuario
+CREATE TABLE IF NOT EXISTS payment_methods (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NOT NULL,
+  card_last4 VARCHAR(4) NOT NULL,
+  exp_date VARCHAR(5) NOT NULL,
+  is_main TINYINT(1) NOT NULL DEFAULT 0,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
 -- =============================================
 -- DATOS INICIALES
 -- =============================================
 
--- Usuario administrador (password: admin123)
+-- Usuario administrador (password: admin123) / Usuario normal (password: user123)
 INSERT INTO users (name, email, password, points) VALUES
-('Admin Pizza', 'admin@adminpizza.es', '$2b$10$xJwG5Y5F3Q9X3J2z3Q9X3OxJwG5Y5F3Q9X3J2z3Q9X3O', 89),
-('Juan García', 'juan@email.com', '$2b$10$xJwG5Y5F3Q9X3J2z3Q9X3OxJwG5Y5F3Q9X3J2z3Q9X3O', 89);
+('Admin Pizza', 'admin@adminpizza.es', '$2a$10$t1YWhrFoGgeDRb4wsqqelOA/Idmkev8sVXPM.zxdj2pVRwuUorTAS', 89),
+('Juan García', 'juan@email.com', '$2a$10$7znj1FlRIaMi6aYi0.L98OFsY6vtBt6xmCKpLgtkNVJCi6ovm8uXC', 89);
 
 -- Productos: Pizzas
 INSERT INTO products (name, description, ingredients, price, category, image_url) VALUES

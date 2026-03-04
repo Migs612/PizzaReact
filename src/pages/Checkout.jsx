@@ -1,9 +1,10 @@
 // =============================================
-// Checkout Page - Simulación de pago
+// Checkout Page - Persistencia real con MySQL
 // =============================================
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
+import api from '../lib/axios'
 import { useCart } from '../context/CartContext'
 import { useOrders } from '../hooks/useOrders'
 import { useAuth } from '../context/AuthContext'
@@ -14,12 +15,55 @@ export default function Checkout() {
   const { user, updatePoints } = useAuth()
   const navigate = useNavigate()
   const [step, setStep] = useState('review') // review, payment, processing, confirmed
+  const [confirmedTotal, setConfirmedTotal] = useState(0)
+  const [confirmedPoints, setConfirmedPoints] = useState(0)
+
+  // Addresses & payments loaded from API
+  const [savedAddresses, setSavedAddresses] = useState([])
+  const [savedPayments, setSavedPayments] = useState([])
+  const [selectedAddressId, setSelectedAddressId] = useState(null)
+  const [selectedPaymentId, setSelectedPaymentId] = useState(null)
+
   const [address, setAddress] = useState({
     street: '',
     city: 'Madrid',
     zip: '28001',
     phone: ''
   })
+
+  // Fetch saved addresses & payments from API on mount
+  useEffect(() => {
+    const token = localStorage.getItem('token')
+    if (!token || token === 'mock-token') return
+
+    Promise.all([
+      api.get('/api/addresses').catch(() => ({ data: [] })),
+      api.get('/api/payments').catch(() => ({ data: [] }))
+    ]).then(([addrRes, payRes]) => {
+      const addrs = addrRes.data
+      const pays = payRes.data
+      setSavedAddresses(addrs)
+      setSavedPayments(pays)
+
+      // Pre-fill with primary address
+      const primary = addrs.find(a => a.is_main) || addrs[0]
+      if (primary) {
+        setSelectedAddressId(primary.id)
+        setAddress({
+          street: primary.street || '',
+          city: primary.city || 'Madrid',
+          zip: primary.postal_code || '28001',
+          phone: primary.phone || ''
+        })
+      }
+
+      // Pre-select primary payment
+      const mainPay = pays.find(p => p.is_main) || pays[0]
+      if (mainPay) {
+        setSelectedPaymentId(mainPay.id)
+      }
+    })
+  }, [])
 
   const handlePay = async () => {
     setStep('processing')
@@ -37,18 +81,33 @@ export default function Checkout() {
       size: item.size
     }))
 
-    const result = await createOrder(orderItems, totalPrice)
+    try {
+      const result = await createOrder(orderItems, totalPrice, selectedAddressId, selectedPaymentId)
 
-    if (result.success) {
-      // Simular progresión de estados
-      simulateOrderProgress(result.order.id)
+      if (result.success) {
+        // Simular progresión de estados
+        simulateOrderProgress(result.order.id)
 
-      // Actualizar puntos del usuario
-      const newPoints = (user.points || 0) + Math.floor(totalPrice)
-      updatePoints(newPoints)
+        // Guardar totales antes de limpiar carrito
+        const paidTotal = totalPrice
+        const earnedPoints = result.order.pointsEarned || Math.floor(totalPrice)
+        setConfirmedTotal(paidTotal)
+        setConfirmedPoints(earnedPoints)
 
-      clearCart()
-      setStep('confirmed')
+        // Actualizar puntos del usuario (usar newTotalPoints del backend si existe)
+        if (result.order.newTotalPoints != null) {
+          updatePoints(result.order.newTotalPoints)
+        } else {
+          updatePoints((user.points || 0) + earnedPoints)
+        }
+
+        clearCart()
+        setStep('confirmed')
+      } else {
+        setStep('review')
+      }
+    } catch {
+      setStep('review')
     }
   }
 
@@ -119,11 +178,11 @@ export default function Checkout() {
           <div className="bg-gray-50 rounded-2xl p-4 mb-6">
             <div className="flex justify-between mb-2">
               <span className="text-gray-500">Total pagado</span>
-              <span className="font-bold text-pizza-red">€{totalPrice.toFixed(2)}</span>
+              <span className="font-bold text-pizza-red">€{confirmedTotal.toFixed(2)}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-gray-500">Puntos ganados</span>
-              <span className="font-bold text-pizza-gold">+{Math.floor(totalPrice)} pts</span>
+              <span className="font-bold text-pizza-gold">+{confirmedPoints} pts</span>
             </div>
           </div>
 
@@ -205,6 +264,54 @@ export default function Checkout() {
               <h2 className="font-bold text-lg text-pizza-black mb-4 flex items-center gap-2">
                 <i className="fas fa-map-marker-alt text-pizza-red" /> Dirección de Entrega
               </h2>
+
+              {/* Saved addresses selector */}
+              {savedAddresses.length > 0 && (
+                <div className="mb-4 space-y-2">
+                  {savedAddresses.map((addr) => (
+                    <button
+                      key={addr.id}
+                      onClick={() => {
+                        setSelectedAddressId(addr.id)
+                        setAddress({
+                          street: addr.street,
+                          city: addr.city,
+                          zip: addr.postal_code,
+                          phone: addr.phone || ''
+                        })
+                      }}
+                      className={`w-full text-left p-3 rounded-xl border transition-colors ${
+                        selectedAddressId === addr.id
+                          ? 'border-pizza-red bg-red-50'
+                          : 'border-gray-200 hover:border-gray-300'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="font-semibold text-sm">{addr.label || 'Dirección'}{addr.is_main ? ' ★' : ''}</p>
+                          <p className="text-xs text-gray-500">{addr.street}, {addr.postal_code} {addr.city}</p>
+                        </div>
+                        {selectedAddressId === addr.id && (
+                          <i className="fas fa-check-circle text-pizza-red" />
+                        )}
+                      </div>
+                    </button>
+                  ))}
+                  <button
+                    onClick={() => { setSelectedAddressId(null); setAddress({ street: '', city: 'Madrid', zip: '28001', phone: '' }) }}
+                    className={`w-full text-left p-3 rounded-xl border transition-colors ${
+                      selectedAddressId === null
+                        ? 'border-pizza-red bg-red-50'
+                        : 'border-dashed border-gray-300 hover:border-gray-400'
+                    }`}
+                  >
+                    <p className="text-sm font-medium text-gray-600"><i className="fas fa-plus mr-2" />Usar otra dirección</p>
+                  </button>
+                </div>
+              )}
+
+              {/* Manual address form — shown when no saved address selected */}
+              {(savedAddresses.length === 0 || selectedAddressId === null) && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Dirección</label>
@@ -245,6 +352,7 @@ export default function Checkout() {
                   />
                 </div>
               </div>
+              )}
             </motion.div>
           </div>
 
@@ -278,6 +386,35 @@ export default function Checkout() {
                   </div>
                 </div>
               </div>
+
+              {/* Payment method selector */}
+              {savedPayments.length > 0 && (
+                <div className="mb-4">
+                  <p className="text-sm font-medium text-gray-700 mb-2">Método de pago</p>
+                  <div className="space-y-2">
+                    {savedPayments.map((pm) => (
+                      <button
+                        key={pm.id}
+                        onClick={() => setSelectedPaymentId(pm.id)}
+                        className={`w-full text-left p-3 rounded-xl border transition-colors flex items-center justify-between ${
+                          selectedPaymentId === pm.id
+                            ? 'border-pizza-red bg-red-50'
+                            : 'border-gray-200 hover:border-gray-300'
+                        }`}
+                      >
+                        <div className="flex items-center gap-2">
+                          <i className="fab fa-cc-visa text-gray-500" />
+                          <span className="text-sm font-medium">•••• {pm.card_last4}</span>
+                          <span className="text-xs text-gray-400">{pm.exp_date}</span>
+                        </div>
+                        {selectedPaymentId === pm.id && (
+                          <i className="fas fa-check-circle text-pizza-red text-sm" />
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               <motion.button
                 whileHover={{ scale: 1.02 }}

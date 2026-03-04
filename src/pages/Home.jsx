@@ -1,7 +1,7 @@
 // =============================================
 // Home – Brutaliste: white bg, massive PIZZA, 920px above-fold
 // =============================================
-import { useState, useMemo } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { motion } from 'framer-motion'
 import { useSearchParams } from 'react-router-dom'
 import { useProducts } from '../hooks/useProducts'
@@ -20,12 +20,15 @@ export default function Home() {
   const [activeCategory, setActiveCategory] = useState(categoryParam || null)
   const { products, loading } = useProducts()
 
+  // Bug #3: sync navbar category links with local filter state
+  useEffect(() => {
+    setActiveCategory(categoryParam || null)
+  }, [categoryParam])
+
   const filteredProducts = useMemo(() => {
     if (!activeCategory) return products
     return products.filter(p => p.category === activeCategory)
   }, [products, activeCategory])
-
-  const visibleProducts = filteredProducts.slice(0, 8)
 
   return (
     <div className="min-h-[920px] bg-white">
@@ -78,15 +81,15 @@ export default function Home() {
             ) : (
               <motion.div
                 layout
-                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5"
+                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 pb-16"
               >
-                {visibleProducts.map((product, index) => (
+                {filteredProducts.map((product, index) => (
                   <ProductCard key={product.id} product={product} index={index} />
                 ))}
               </motion.div>
             )}
 
-            {visibleProducts.length === 0 && !loading && (
+            {filteredProducts.length === 0 && !loading && (
               <div className="text-center py-16 text-gray-400">
                 <i className="fas fa-search text-3xl mb-3 block" />
                 <p>No se encontraron productos</p>

@@ -17,7 +17,7 @@ const EMPTY_PRODUCT = {
 }
 
 export default function Admin() {
-  const { user, isAdmin } = useAuth()
+  const { user, isAdmin, loading: authLoading } = useAuth()
   const { products, loading, addProduct, updateProduct, deleteProduct } = useProducts()
   const navigate = useNavigate()
   const [showModal, setShowModal] = useState(false)
@@ -27,8 +27,16 @@ export default function Admin() {
   const [deleteConfirm, setDeleteConfirm] = useState(null)
 
   useEffect(() => {
-    if (!user || !isAdmin) navigate('/profile')
-  }, [user, isAdmin, navigate])
+    if (!authLoading && (!user || !isAdmin)) navigate('/profile')
+  }, [user, isAdmin, authLoading, navigate])
+
+  if (authLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="w-10 h-10 border-4 border-pizza-red border-t-transparent rounded-full animate-spin" />
+      </div>
+    )
+  }
 
   if (!isAdmin) return null
 

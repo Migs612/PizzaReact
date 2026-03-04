@@ -6,6 +6,8 @@ import cors from 'cors'
 import authRoutes from './routes/auth.js'
 import productRoutes from './routes/products.js'
 import orderRoutes from './routes/orders.js'
+import addressRoutes from './routes/addresses.js'
+import paymentRoutes from './routes/payments.js'
 
 const app = express()
 const PORT = 3001
@@ -18,6 +20,8 @@ app.use(express.json())
 app.use('/api/auth', authRoutes)
 app.use('/api/products', productRoutes)
 app.use('/api/orders', orderRoutes)
+app.use('/api/addresses', addressRoutes)
+app.use('/api/payments', paymentRoutes)
 
 // Health check
 app.get('/api/health', (req, res) => {
