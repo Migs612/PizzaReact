@@ -1,5 +1,5 @@
 // =============================================
-// Home Page - Wireframe: viewport 1920x920, no scroll, gray hero
+// Home – Brutaliste: white bg, massive PIZZA, 920px above-fold
 // =============================================
 import { useState, useMemo } from 'react'
 import { motion } from 'framer-motion'
@@ -25,23 +25,20 @@ export default function Home() {
     return products.filter(p => p.category === activeCategory)
   }, [products, activeCategory])
 
-  // Mostrar máximo 8 cards para evitar scroll
   const visibleProducts = filteredProducts.slice(0, 8)
 
   return (
-    <div className="min-h-[920px] bg-gray-100">
-      {/* Contenedor centrado 1440px */}
-      <div className="max-w-[1440px] mx-auto flex flex-col px-8">
+    <div className="min-h-[920px] bg-white">
+      <div className="flex flex-col px-8">
 
-        {/* Hero + Grid */}
         <div className="flex-1 flex flex-col pt-24">
 
-          {/* Hero Section — fondo gris sólido, texto masivo */}
+          {/* Hero */}
           <section className="text-center py-8">
             <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5 }}
             >
               <p className="text-gray-400 text-sm tracking-[0.3em] uppercase mb-2">
                 Pizzería Artesanal · Desde 2020
@@ -55,16 +52,16 @@ export default function Home() {
             </motion.div>
           </section>
 
-          {/* Category Filters */}
+          {/* Category pills */}
           <div className="flex justify-center gap-2 mb-6">
             {CATEGORIES.map((cat) => (
               <button
                 key={cat.label}
                 onClick={() => setActiveCategory(cat.key)}
-                className={`px-5 py-2 rounded-full text-xs font-semibold tracking-[0.15em] transition-all duration-300 ${
+                className={`px-5 py-2 rounded-full text-xs font-semibold tracking-[0.15em] transition-colors duration-200 ${
                   activeCategory === cat.key
-                    ? 'bg-pizza-black text-white'
-                    : 'bg-white text-gray-500 hover:bg-gray-200 border border-gray-200'
+                    ? 'bg-black text-white'
+                    : 'bg-white text-gray-500 hover:bg-pizza-gray border border-gray-300'
                 }`}
               >
                 {cat.label}
@@ -72,7 +69,7 @@ export default function Home() {
             ))}
           </div>
 
-          {/* Products Grid — 4 columnas, compacto */}
+          {/* Product grid */}
           <section className="flex-1 min-h-0">
             {loading ? (
               <div className="flex justify-center items-center h-40">

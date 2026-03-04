@@ -106,11 +106,11 @@ export default function Auth() {
   )
 
   return (
-    <div className="min-h-[920px] bg-gray-100 flex items-center justify-center pt-24 pb-12">
+    <div className="min-h-[920px] bg-white flex items-center justify-center pt-24 pb-12">
       <motion.div
         initial={{ opacity: 0, scale: 0.96 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="w-full max-w-[860px] bg-white rounded-3xl overflow-hidden relative"
+        className="w-full max-w-[860px] bg-white rounded-3xl overflow-hidden relative border border-gray-200"
         style={{ height: 480 }}
       >
         {/* ---- Contenedor de dos columnas fijas ---- */}
@@ -126,7 +126,7 @@ export default function Auth() {
                   exit={{ opacity: 0, x: 40 }} transition={{ duration: 0.35 }}
                   className="flex flex-col items-center"
                 >
-                  <h2 className="text-2xl font-black text-pizza-black mb-1">Iniciar Sesión</h2>
+                  <h2 className="text-2xl font-black text-black mb-1">Iniciar Sesión</h2>
                   <p className="text-gray-400 text-xs mb-6">Accede a tu cuenta</p>
                   <FormFields mode="login" />
                 </motion.div>
@@ -138,7 +138,7 @@ export default function Auth() {
                   className="flex flex-col items-center text-center"
                 >
                   <span className="text-5xl mb-4">🍕</span>
-                  <h2 className="text-2xl font-black text-pizza-black mb-2">¿Ya tienes cuenta?</h2>
+                  <h2 className="text-2xl font-black text-black mb-2">¿Ya tienes cuenta?</h2>
                   <p className="text-gray-400 text-sm mb-6 max-w-[220px] leading-relaxed">
                     Inicia sesión para hacer pedidos y acumular puntos.
                   </p>
@@ -156,7 +156,7 @@ export default function Auth() {
           {/* ---- Separador central con "O" ---- */}
           <div className="absolute left-1/2 top-0 bottom-0 -translate-x-1/2 flex items-center z-20">
             <div className="relative w-px h-full bg-gray-200">
-              <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white w-9 h-9 rounded-full border-2 border-gray-200 flex items-center justify-center text-gray-400 font-bold text-xs shadow-sm">
+              <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white w-9 h-9 rounded-full border-2 border-gray-200 flex items-center justify-center text-gray-400 font-bold text-xs">
                 O
               </span>
             </div>
@@ -172,7 +172,7 @@ export default function Auth() {
                   exit={{ opacity: 0, x: -40 }} transition={{ duration: 0.35 }}
                   className="flex flex-col items-center"
                 >
-                  <h2 className="text-2xl font-black text-pizza-black mb-1">Crear Cuenta</h2>
+                  <h2 className="text-2xl font-black text-black mb-1">Crear Cuenta</h2>
                   <p className="text-gray-400 text-xs mb-6">Regístrate gratis</p>
                   <FormFields mode="register" />
                 </motion.div>
@@ -184,7 +184,7 @@ export default function Auth() {
                   className="flex flex-col items-center text-center"
                 >
                   <span className="text-5xl mb-4">🍕</span>
-                  <h2 className="text-2xl font-black text-pizza-black mb-2">¡Únete a nosotros!</h2>
+                  <h2 className="text-2xl font-black text-black mb-2">¡Únete a nosotros!</h2>
                   <p className="text-gray-400 text-sm mb-6 max-w-[220px] leading-relaxed">
                     Crea tu cuenta y empieza a disfrutar de la mejor pizza.
                   </p>

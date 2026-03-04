@@ -55,10 +55,10 @@ export default function Checkout() {
   // Si no hay items y no estamos en confirmación, redirigir
   if (items.length === 0 && step !== 'confirmed') {
     return (
-      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+      <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
           <i className="fas fa-shopping-cart text-6xl text-gray-300 mb-4" />
-          <h2 className="text-2xl font-bold text-gray-700 mb-2">Tu carrito está vacío</h2>
+          <h2 className="text-2xl font-bold text-black mb-2">Tu carrito está vacío</h2>
           <p className="text-gray-500 mb-6">Añade productos antes de continuar</p>
           <button
             onClick={() => navigate('/')}
@@ -74,7 +74,7 @@ export default function Checkout() {
   // Pantalla de procesamiento
   if (step === 'processing') {
     return (
-      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+      <div className="min-h-screen bg-white flex items-center justify-center">
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -85,7 +85,7 @@ export default function Checkout() {
             transition={{ repeat: Infinity, duration: 1, ease: 'linear' }}
             className="w-20 h-20 border-4 border-pizza-red border-t-transparent rounded-full mx-auto mb-6"
           />
-          <h2 className="text-2xl font-bold text-pizza-black mb-2">Procesando pago...</h2>
+          <h2 className="text-2xl font-bold text-black mb-2">Procesando pago...</h2>
           <p className="text-gray-500">No cierres esta ventana</p>
         </motion.div>
       </div>
@@ -95,7 +95,7 @@ export default function Checkout() {
   // Pantalla de confirmación
   if (step === 'confirmed') {
     return (
-      <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4">
+      <div className="min-h-screen bg-white flex items-center justify-center px-4">
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -111,7 +111,7 @@ export default function Checkout() {
             <i className="fas fa-check text-green-500 text-4xl" />
           </motion.div>
 
-          <h2 className="text-3xl font-black text-pizza-black mb-3">¡Pedido Confirmado!</h2>
+          <h2 className="text-3xl font-black text-black mb-3">¡Pedido Confirmado!</h2>
           <p className="text-gray-500 mb-6">
             Tu pizza está siendo preparada con mucho amor 🍕
           </p>
@@ -144,7 +144,7 @@ export default function Checkout() {
             </button>
             <button
               onClick={() => navigate('/')}
-              className="bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-3 rounded-xl transition-colors"
+              className="bg-pizza-gray hover:opacity-80 text-gray-700 font-bold py-3 rounded-xl transition-opacity"
             >
               Volver al Menú
             </button>
@@ -156,12 +156,12 @@ export default function Checkout() {
 
   // Vista de revisión del pedido
   return (
-    <div className="min-h-screen bg-gray-100 pt-24 pb-12">
+    <div className="min-h-screen bg-white pt-24 pb-12">
       <div className="max-w-[1440px] mx-auto px-6">
         <motion.h1
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-3xl font-black text-pizza-black mb-8"
+          className="text-3xl font-black text-black mb-8"
         >
           Finalizar Pedido
         </motion.h1>
@@ -175,7 +175,7 @@ export default function Checkout() {
               animate={{ opacity: 1, y: 0 }}
               className="bg-white rounded-2xl p-6 border border-gray-200"
             >
-              <h2 className="font-bold text-lg text-pizza-black mb-4 flex items-center gap-2">
+              <h2 className="font-bold text-lg text-black mb-4 flex items-center gap-2">
                 <i className="fas fa-shopping-bag text-pizza-red" /> Tu Pedido
               </h2>
               <div className="space-y-4">
@@ -256,7 +256,7 @@ export default function Checkout() {
             className="lg:col-span-1"
           >
             <div className="bg-white rounded-2xl p-6 border border-gray-200 sticky top-24">
-              <h2 className="font-bold text-lg text-pizza-black mb-4">Resumen</h2>
+              <h2 className="font-bold text-lg text-black mb-4">Resumen</h2>
 
               <div className="space-y-3 mb-6">
                 <div className="flex justify-between text-sm">

@@ -73,7 +73,7 @@ export default function Admin() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 pt-24 pb-12">
+    <div className="min-h-screen bg-white pt-24 pb-12">
       <div className="max-w-[1440px] mx-auto px-6">
         {/* Header */}
         <motion.div
@@ -82,7 +82,7 @@ export default function Admin() {
           className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4"
         >
           <div>
-            <h1 className="text-3xl font-black text-pizza-black flex items-center gap-3">
+            <h1 className="text-3xl font-black text-black flex items-center gap-3">
               <i className="fas fa-cog text-pizza-red" /> Panel de Administración
             </h1>
             <p className="text-gray-500 mt-1">Gestiona los productos de tu pizzería</p>
@@ -124,7 +124,7 @@ export default function Admin() {
                 <i className={stat.icon} />
               </div>
               <div>
-                <div className="text-2xl font-black text-pizza-black">{stat.value}</div>
+                <div className="text-2xl font-black text-black">{stat.value}</div>
                 <div className="text-xs text-gray-500">{stat.label}</div>
               </div>
             </motion.div>
@@ -180,7 +180,7 @@ export default function Admin() {
                             className="w-12 h-12 rounded-xl object-cover"
                           />
                           <div>
-                            <div className="font-semibold text-pizza-black">{product.name}</div>
+                            <div className="font-semibold text-black">{product.name}</div>
                             <div className="text-xs text-gray-400 truncate max-w-xs">{product.description}</div>
                           </div>
                         </div>
@@ -243,7 +243,7 @@ export default function Admin() {
                 <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
                   <i className="fas fa-trash-alt text-red-500 text-2xl" />
                 </div>
-                <h3 className="text-xl font-bold text-pizza-black mb-2">¿Eliminar producto?</h3>
+                <h3 className="text-xl font-bold text-black mb-2">¿Eliminar producto?</h3>
                 <p className="text-gray-500 mb-6">Esta acción no se puede deshacer</p>
                 <div className="flex gap-3">
                   <button
@@ -281,7 +281,7 @@ export default function Admin() {
                 onClick={(e) => e.stopPropagation()}
                 className="bg-white rounded-2xl p-8 max-w-lg w-full max-h-[90vh] overflow-y-auto"
               >
-                <h2 className="text-2xl font-black text-pizza-black mb-6">
+                <h2 className="text-2xl font-black text-black mb-6">
                   {editingProduct ? 'Editar Producto' : 'Nuevo Producto'}
                 </h2>
 

@@ -43,7 +43,7 @@ export default function CartDrawer() {
           >
             {/* Header */}
             <div className="flex items-center justify-between p-6 border-b border-gray-100">
-              <h2 className="text-xl font-bold text-pizza-black flex items-center gap-2">
+              <h2 className="text-xl font-bold text-black flex items-center gap-2">
                 <i className="fas fa-shopping-cart text-pizza-red" />
                 Tu Carrito
                 <span className="text-sm font-normal text-gray-500">({totalItems} items)</span>
@@ -72,7 +72,7 @@ export default function CartDrawer() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, x: 100 }}
-                    className="flex gap-4 bg-gray-50 rounded-xl p-3"
+                    className="flex gap-4 bg-pizza-gray rounded-xl p-3"
                   >
                     {/* Image */}
                     <img
@@ -83,7 +83,7 @@ export default function CartDrawer() {
 
                     {/* Details */}
                     <div className="flex-1 min-w-0">
-                      <h3 className="font-semibold text-pizza-black text-sm truncate">{item.name}</h3>
+                      <h3 className="font-semibold text-black text-sm truncate">{item.name}</h3>
                       {item.category === 'Pizza' && (
                         <span className="text-xs text-gray-500 bg-gray-200 px-2 py-0.5 rounded-full">
                           {item.size}
@@ -126,19 +126,19 @@ export default function CartDrawer() {
               <div className="border-t border-gray-100 p-6 space-y-4">
                 <div className="flex justify-between items-center">
                   <span className="text-gray-600 font-medium">Subtotal</span>
-                  <span className="text-lg font-bold text-pizza-black">€{parseFloat(totalPrice).toFixed(2)}</span>
+                  <span className="text-lg font-bold text-black">€{parseFloat(totalPrice).toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-gray-600 font-medium">Envío</span>
                   <span className="text-sm font-medium text-pizza-green">GRATIS</span>
                 </div>
                 <div className="flex justify-between items-center pt-3 border-t">
-                  <span className="text-xl font-bold text-pizza-black">Total</span>
+                  <span className="text-xl font-bold text-black">Total</span>
                   <span className="text-xl font-bold text-pizza-red">€{parseFloat(totalPrice).toFixed(2)}</span>
                 </div>
                 <button
                   onClick={handleCheckout}
-                  className="w-full bg-pizza-red hover:bg-pizza-red-dark text-white font-bold py-4 rounded-xl transition-colors duration-200 text-lg"
+                  className="w-full bg-pizza-red text-white font-bold py-4 rounded-full hover:opacity-90 transition-opacity duration-200 text-lg"
                 >
                   Realizar Pedido
                 </button>

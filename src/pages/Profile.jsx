@@ -1,5 +1,5 @@
 // =============================================
-// Profile Page – Split blanco / rojo (wireframe)
+// Profile – Brutaliste: 4+8 col split (white / red)
 // =============================================
 import { useEffect } from 'react'
 import { motion } from 'framer-motion'
@@ -8,12 +8,14 @@ import { useAuth } from '../context/AuthContext'
 import { useOrders } from '../hooks/useOrders'
 
 const STATUS_STEPS = ['Pendiente', 'Preparando', 'En camino', 'Entregado']
-const STATUS_COLORS = {
-  'Pendiente': 'bg-yellow-100 text-yellow-700 border border-yellow-200',
-  'Preparando': 'bg-blue-100 text-blue-700 border border-blue-200',
-  'En camino': 'bg-purple-100 text-purple-700 border border-purple-200',
-  'Entregado': 'bg-green-100 text-green-700 border border-green-200',
-}
+
+const SIDE_NAV = [
+  { icon: 'fa-receipt', label: 'Mis pedidos' },
+  { icon: 'fa-undo', label: 'Devoluciones' },
+  { icon: 'fa-map-marker-alt', label: 'Direcciones' },
+  { icon: 'fa-credit-card', label: 'Métodos de pago' },
+  { icon: 'fa-cog', label: 'Configuración' },
+]
 
 export default function Profile() {
   const { user, isAdmin, logout } = useAuth()
@@ -35,103 +37,149 @@ export default function Profile() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 pt-24 pb-0">
-      <div className="max-w-[1440px] mx-auto px-6">
-        {/* ---- Split layout: izquierda blanco / derecha rojo ---- */}
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_400px] gap-0 rounded-2xl overflow-hidden border border-gray-200">
+    <div className="min-h-screen bg-white pt-24 pb-0">
+      <div className="px-6">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-0 overflow-hidden">
 
-          {/* ========== COLUMNA IZQUIERDA — Blanca ========== */}
-          <div className="bg-white p-8 lg:p-10">
-            {/* Profile Header */}
+          {/* ========== LEFT — 4 cols, white ========== */}
+          <div className="md:col-span-4 bg-white p-8 lg:p-10 border-r border-gray-200">
+            {/* Greeting */}
             <motion.div
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="flex flex-col sm:flex-row items-start sm:items-center gap-5 mb-8 pb-6 border-b border-gray-100"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="mb-8"
             >
-              {/* Avatar */}
-              <div className="w-16 h-16 bg-pizza-red rounded-full flex items-center justify-center text-white text-2xl font-black flex-shrink-0">
-                {user.name?.charAt(0).toUpperCase()}
-              </div>
-              {/* Info */}
-              <div className="flex-1">
-                <h1 className="text-xl font-black text-pizza-black">{user.name}</h1>
-                <p className="text-gray-400 text-sm">{user.email}</p>
-              </div>
-              {/* Points */}
-              <div className="bg-pizza-black text-white rounded-xl px-5 py-3 text-center">
-                <div className="text-2xl font-black">{user.points || 89}</div>
-                <div className="text-[10px] tracking-[0.2em] opacity-70 font-semibold">POINTS</div>
-              </div>
-              {/* Actions */}
-              <div className="flex gap-2">
-                {isAdmin && (
-                  <Link
-                    to="/admin"
-                    className="bg-pizza-black text-white font-bold py-2.5 px-5 rounded-xl text-xs tracking-wider hover:bg-gray-800 transition-colors"
-                  >
-                    <i className="fas fa-cog mr-1.5" />GESTIÓN
-                  </Link>
-                )}
-                <button
-                  onClick={handleLogout}
-                  className="bg-gray-100 text-gray-600 font-bold py-2.5 px-5 rounded-xl text-xs tracking-wider hover:bg-gray-200 transition-colors"
-                >
-                  <i className="fas fa-sign-out-alt mr-1.5" />SALIR
-                </button>
-              </div>
+              <h1 className="text-2xl font-black text-black">
+                Hola {user.name?.split(' ')[0] || 'Juan'}
+              </h1>
+              <p className="text-gray-400 text-sm mt-1">{user.email}</p>
             </motion.div>
 
-            {/* Order History */}
-            <h2 className="text-sm font-bold text-pizza-black uppercase tracking-wider mb-4 flex items-center gap-2">
-              <i className="fas fa-history text-pizza-red" /> Historial de Pedidos
+            {/* Points */}
+            <div className="mb-8">
+              <div className="text-5xl font-black text-black">{user.points || 89}</div>
+              <div className="text-xs tracking-[0.25em] text-gray-400 font-semibold uppercase mt-1">
+                POINTS
+              </div>
+            </div>
+
+            {/* Side nav */}
+            <nav className="space-y-1 mb-8">
+              {SIDE_NAV.map((item) => (
+                <button
+                  key={item.label}
+                  className="w-full text-left flex items-center gap-3 px-4 py-3 text-sm text-gray-600 hover:text-black hover:bg-pizza-gray rounded-lg transition-colors"
+                >
+                  <i className={`fas ${item.icon} w-5 text-center text-gray-400`} />
+                  {item.label}
+                </button>
+              ))}
+            </nav>
+
+            {/* Actions */}
+            <div className="flex flex-col gap-2">
+              {isAdmin && (
+                <Link
+                  to="/admin"
+                  className="bg-black text-white font-bold py-3 px-5 rounded-full text-xs tracking-wider text-center hover:opacity-80 transition-opacity"
+                >
+                  <i className="fas fa-cog mr-2" />GESTIÓN
+                </Link>
+              )}
+              <button
+                onClick={handleLogout}
+                className="bg-pizza-gray text-gray-600 font-bold py-3 px-5 rounded-full text-xs tracking-wider hover:opacity-80 transition-opacity"
+              >
+                <i className="fas fa-sign-out-alt mr-2" />CERRAR SESIÓN
+              </button>
+            </div>
+          </div>
+
+          {/* ========== RIGHT — 8 cols, RED ========== */}
+          <div className="md:col-span-8 bg-[#B00000] p-8 lg:p-10 text-white min-h-[600px] flex flex-col">
+
+            {/* Active delivery tracking */}
+            {activeOrder && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="mb-8"
+              >
+                <h2 className="text-xs font-bold uppercase tracking-[0.2em] mb-4 opacity-80">
+                  <i className="fas fa-motorcycle mr-2" />Pedido activo
+                </h2>
+
+                {/* Steps */}
+                <div className="flex items-center gap-2 mb-6">
+                  {STATUS_STEPS.map((step, i) => (
+                    <div key={step} className="flex items-center gap-2">
+                      <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold ${
+                        i <= activeStepIdx ? 'bg-white text-[#B00000]' : 'bg-white/20 text-white/60'
+                      }`}>
+                        {i <= activeStepIdx ? <i className="fas fa-check text-[10px]" /> : i + 1}
+                      </div>
+                      <span className={`text-xs font-semibold hidden sm:inline ${i <= activeStepIdx ? 'opacity-100' : 'opacity-40'}`}>
+                        {step}
+                      </span>
+                      {i < STATUS_STEPS.length - 1 && (
+                        <div className={`w-6 h-0.5 ${i < activeStepIdx ? 'bg-white' : 'bg-white/20'}`} />
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </motion.div>
+            )}
+
+            {/* Orders list */}
+            <h2 className="text-xs font-bold uppercase tracking-[0.2em] mb-4 opacity-80">
+              <i className="fas fa-history mr-2" />Mis pedidos
             </h2>
 
             {loading ? (
-              <div className="flex justify-center py-16">
-                <div className="w-8 h-8 border-4 border-pizza-red border-t-transparent rounded-full animate-spin" />
+              <div className="flex justify-center py-12">
+                <div className="w-8 h-8 border-4 border-white border-t-transparent rounded-full animate-spin" />
               </div>
             ) : orders.length === 0 ? (
-              <div className="text-center py-16 text-gray-400">
-                <i className="fas fa-receipt text-4xl mb-3 block" />
-                <p className="text-sm font-medium">Aún no tienes pedidos</p>
+              <div className="flex-1 flex flex-col items-center justify-center text-center opacity-70">
+                <i className="fas fa-pizza-slice text-4xl mb-3 opacity-50" />
+                <p className="text-sm font-semibold">No hay pedidos aún</p>
                 <Link
                   to="/"
-                  className="inline-block mt-4 bg-pizza-red text-white px-6 py-2 rounded-full font-bold text-sm hover:bg-pizza-red-dark transition-colors"
+                  className="mt-4 bg-white text-[#B00000] px-6 py-2 rounded-full font-bold text-sm hover:opacity-90 transition-opacity"
                 >
                   Hacer mi primer pedido
                 </Link>
               </div>
             ) : (
-              <div className="space-y-3">
+              <div className="space-y-3 flex-1">
                 {orders.map((order, idx) => (
                   <motion.div
                     key={order.id}
                     initial={{ opacity: 0, y: 8 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: idx * 0.06 }}
-                    className="border border-gray-100 rounded-xl p-4 hover:border-gray-200 transition-colors"
+                    transition={{ delay: idx * 0.05 }}
+                    className="bg-white text-black rounded-xl p-4"
                   >
-                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
                       <div>
-                        <span className="text-xs text-gray-400">Pedido #{order.id}</span>
-                        <h3 className="font-bold text-sm text-pizza-black">
+                        <span className="text-[11px] text-gray-400">Pedido #{order.id}</span>
+                        <h3 className="font-bold text-sm">
                           {new Date(order.created_at).toLocaleDateString('es-ES', {
-                            day: 'numeric', month: 'long', year: 'numeric',
-                            hour: '2-digit', minute: '2-digit'
+                            day: 'numeric', month: 'long', year: 'numeric'
                           })}
                         </h3>
                       </div>
                       <div className="flex items-center gap-3">
-                        <span className={`px-3 py-1 rounded-full text-[11px] font-bold ${STATUS_COLORS[order.status]}`}>
+                        <span className="px-3 py-1 rounded-full text-[11px] font-bold bg-pizza-gray text-gray-600">
                           {order.status}
                         </span>
-                        <span className="font-black text-pizza-red">€{parseFloat(order.total).toFixed(2)}</span>
+                        <span className="font-black text-[#B00000]">€{parseFloat(order.total).toFixed(2)}</span>
                       </div>
                     </div>
                     {order.items && order.items.length > 0 && (
                       <div className="flex gap-1.5 flex-wrap mt-2">
                         {order.items.map((item, i) => (
-                          <span key={i} className="bg-gray-50 rounded-lg px-2.5 py-1 text-[11px] text-gray-500 border border-gray-100">
+                          <span key={i} className="bg-pizza-gray rounded-lg px-2.5 py-1 text-[11px] text-gray-500">
                             {item.name} ×{item.quantity}
                           </span>
                         ))}
@@ -141,74 +189,23 @@ export default function Profile() {
                 ))}
               </div>
             )}
-          </div>
 
-          {/* ========== COLUMNA DERECHA — Roja ========== */}
-          <div className="bg-pizza-red p-8 lg:p-10 text-white flex flex-col">
-            {/* Delivery Status */}
-            <h2 className="text-sm font-bold uppercase tracking-wider mb-6 flex items-center gap-2 opacity-90">
-              <i className="fas fa-motorcycle" /> Estado del Pedido
-            </h2>
-
-            {activeOrder ? (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-              >
-                {/* Progress Steps – vertical */}
-                <div className="space-y-4 mb-8">
-                  {STATUS_STEPS.map((step, i) => (
-                    <div key={step} className="flex items-center gap-3">
-                      <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 transition-colors ${
-                        i <= activeStepIdx
-                          ? 'bg-white text-pizza-red'
-                          : 'bg-white/20 text-white/60'
-                      }`}>
-                        {i <= activeStepIdx ? <i className="fas fa-check text-[10px]" /> : i + 1}
-                      </div>
-                      <span className={`text-sm font-semibold ${i <= activeStepIdx ? 'opacity-100' : 'opacity-50'}`}>
-                        {step}
-                      </span>
-                    </div>
-                  ))}
+            {/* Map placeholder */}
+            <div className="mt-6 rounded-xl overflow-hidden min-h-[160px] relative bg-black/20">
+              <img
+                src="https://api.mapbox.com/styles/v1/mapbox/dark-v11/static/-3.7038,40.4168,13,0/600x300@2x?access_token=pk.placeholder"
+                alt="Mapa de entrega"
+                className="w-full h-full object-cover opacity-40"
+                onError={(e) => { e.target.style.display = 'none' }}
+              />
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="text-center">
+                  <i className="fas fa-map-marker-alt text-2xl mb-2 block opacity-80" />
+                  <p className="text-sm font-bold opacity-90">Madrid, España</p>
+                  <p className="text-xs opacity-60 mt-1">Tiempo estimado: 25 min</p>
                 </div>
-
-                {/* Progress bar horizontal */}
-                <div className="h-1.5 bg-white/20 rounded-full mb-6 overflow-hidden">
-                  <motion.div
-                    initial={{ width: 0 }}
-                    animate={{ width: `${((activeStepIdx + 1) / STATUS_STEPS.length) * 100}%` }}
-                    transition={{ duration: 1, ease: 'easeOut' }}
-                    className="h-full bg-white rounded-full"
-                  />
-                </div>
-
-                {/* Map placeholder */}
-                <div className="rounded-xl overflow-hidden flex-1 min-h-[180px] relative bg-pizza-red-dark">
-                  <img
-                    src="https://api.mapbox.com/styles/v1/mapbox/dark-v11/static/-3.7038,40.4168,13,0/600x300@2x?access_token=pk.placeholder"
-                    alt="Mapa de entrega"
-                    className="w-full h-full object-cover opacity-60"
-                    onError={(e) => {
-                      e.target.style.display = 'none'
-                    }}
-                  />
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="text-center">
-                      <i className="fas fa-map-marker-alt text-3xl mb-2 block opacity-80" />
-                      <p className="text-sm font-bold opacity-90">Tiempo estimado: 25 min</p>
-                      <p className="text-xs opacity-60 mt-1">Madrid, España</p>
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            ) : (
-              <div className="flex-1 flex flex-col items-center justify-center text-center opacity-70">
-                <i className="fas fa-pizza-slice text-5xl mb-4 opacity-50" />
-                <p className="text-sm font-semibold">No hay pedidos activos</p>
-                <p className="text-xs opacity-60 mt-1">¡Haz un pedido para ver el seguimiento!</p>
               </div>
-            )}
+            </div>
           </div>
 
         </div>

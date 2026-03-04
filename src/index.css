@@ -2,7 +2,7 @@
 @import "@fortawesome/fontawesome-free/css/all.min.css";
 
 /* ========================================
-   PIZZA REACT - Global Styles
+   PIZZA REACT - Brutaliste / Minimaliste
    ======================================== */
 
 @theme {
@@ -10,39 +10,28 @@
   --color-pizza-red-dark: #8B0000;
   --color-pizza-red-light: #D32F2F;
   --color-pizza-black: #1a1a1a;
-  --color-pizza-gray: #f5f5f5;
+  --color-pizza-gray: #E5E5E5;
   --color-pizza-gray-dark: #333333;
   --color-pizza-green: #4CAF50;
   --color-pizza-gold: #FFD700;
   --font-sans: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
 }
 
-/* Reset & Base */
+/* Reset & Base — fondo BLANCO global, sin grises genéricos */
 body {
   font-family: var(--font-sans);
-  background-color: #fafafa;
-  color: #333;
+  background-color: #ffffff;
+  color: #1a1a1a;
   margin: 0;
   -webkit-font-smoothing: antialiased;
 }
 
-/* Scrollbar Styling */
-::-webkit-scrollbar {
-  width: 8px;
-}
-::-webkit-scrollbar-track {
-  background: #f1f1f1;
-}
-::-webkit-scrollbar-thumb {
-  background: #B00000;
-  border-radius: 4px;
-}
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #B00000; border-radius: 3px; }
 
-/* Custom Utilities */
-.text-shadow {
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-}
-
+/* Utilities */
 .line-clamp-2 {
   display: -webkit-box;
   -webkit-line-clamp: 2;
